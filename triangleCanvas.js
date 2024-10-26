@@ -1,8 +1,9 @@
-  class TriangleCanvas{
-    constructor(){
+class TriangleCanvas{
+    constructor(validityChecks){
       this.openSides = [];
       this.allSides = [];     
       this.allTriangles = [];
+      this.validityChecks = validityChecks;
     }
 
     populate() {
@@ -74,10 +75,12 @@
 
       // Creates and returns a triangle from any type of input. Will undergo a sanity check first. Todo: create from Variable, x,y 
       createTriangle(a){
-        const overlapsAny = () => { // Change to an arrow function
-          return !this.allTriangles.reduce((acc, triangle2) => 
-              acc && !doTrianglesOverlap(newTriangle, triangle2), true);
-      };
+      
+
+      const checkAllValidity = (triangle) => {
+        return this.validityChecks.reduce((acc, validCheck) => 
+          acc && validCheck(triangle, this.allTriangles), true);
+      }
 
       let attempts = 0;
       let newTriangle;
@@ -93,10 +96,42 @@
         attempts++;
         if(attempts >4){return false;}
       } while(
-        !newTriangle.sanityCheck() ||
-        overlapsAny() 
+        !checkAllValidity(newTriangle)
+        // overlapsAny(newTriangle, this.allTriangles) 
         )
 
       return newTriangle;
     }
+
+    
   }
+// something is wrong with angle calculation? idkkkkk
+// Higher order function, second parameter after newTriangle omitted, as there's no need for alltriangles
+  const triangleValidity = (minimumAngle, maximumAngle, minimumSize, maximumSize) => (newTriangle) => {
+
+    let angleA = calculateAngle(newTriangle.pointA, newTriangle.pointB, newTriangle.pointC)
+    let angleB = calculateAngle(newTriangle.pointB, newTriangle.pointA, newTriangle.pointC)
+    let angleC = calculateAngle(newTriangle.pointC, newTriangle.pointB, newTriangle.pointA)
+    if(
+      angleA < minimumAngle ||
+      angleB < minimumAngle ||
+      angleC < minimumAngle 
+      // || angleA > maximumAngle ||
+      // angleB > maximumAngle ||
+      // angleC > maximumAngle
+      ){return false;} 
+    if(newTriangle.size < minimumSize || newTriangle.size > maximumSize){return false;}
+
+    return true;
+  }
+
+  const overlapsAtLeastOne = (newTriangle, allTriangles) => {
+    return !allTriangles.reduce((acc, triangle2) => 
+        acc && !doTrianglesOverlap(newTriangle, triangle2), true);
+  };
+
+  const overlapsNone = (newTriangle, allTriangles) => {
+    return allTriangles.reduce((acc, triangle2) => 
+        acc && !doTrianglesOverlap(newTriangle, triangle2), true);
+  };
+

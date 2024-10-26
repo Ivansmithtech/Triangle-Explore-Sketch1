@@ -140,7 +140,7 @@ class Triangle{
 
   
     
-  sanityCheck(){
+  valid(){
     let minimumSize = 1/7*Math.PI
     if(
       calculateAngle(this.pointA, this.pointB, this.pointC) < minimumSize ||

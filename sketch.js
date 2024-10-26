@@ -9,11 +9,12 @@ function setup() {
 
   colourGrad = color(255,255,255);
   stroke(colourGrad);
-  frameRate(20)
+  frameRate(30)
 
   currentCount=0;
-
-  triangleCanvas = new TriangleCanvas()
+  let validities = [overlapsNone]
+  validities.push(triangleValidity(1/9*Math.PI, 1/3*Math.PI, 150, 100000))
+  triangleCanvas = new TriangleCanvas(validities)
   triangleCanvas.commenceWithTriangle()
 
 }
