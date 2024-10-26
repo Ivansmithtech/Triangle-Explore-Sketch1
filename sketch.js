@@ -1,10 +1,5 @@
-let openSides = [];
-let allSides = [];
-let openSidesClone;
-let colourGrad;
-let weightGrad;
+let triangleCanvas
 let currentCount;
-let allTriangles = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -17,43 +12,24 @@ function setup() {
   frameRate(20)
 
   currentCount=0;
-  commenceWithTriangle()
+
+  triangleCanvas = new TriangleCanvas()
+  triangleCanvas.commenceWithTriangle()
+
 }
 
-function commenceWithTriangle(){
-  pointA = new Point(windowWidth/2-getRandom(-200,-50),windowHeight/2+getRandom(0,50));
-  pointB = new Point(windowWidth/2+getRandom(0,30),windowHeight/2-getRandom(-300,300));
-  pointC = new Point(windowWidth/2+getRandom(0,100), windowHeight/2 +getRandom(0,100));
-
-  let newTriangle = new Triangle(pointA, pointB, pointC);
-  newTriangle.sides.forEach(side => openSides.push(side));
-  for(side of openSides){
-    side.draw();
-  }
-  allSides = [...newTriangle.sides]
-  
-}
-
-function reset(){
-  openSides = []
-  allSides = []
-  allTriangles=[]
-  currentCount = 0;
-  stroke(255,255,255);
-  strokeWeight(4);
-  background(0)
-  commenceWithTriangle();
-}
 
 function draw(){
   background(0);
   if(currentCount > 12){
-    reset();
+    triangleCanvas.reset();
+    currentCount = 0;
   }
-  populate();
+
+  triangleCanvas.populate();
   currentMode();
 
-  for(side of allSides){    
+  for(side of triangleCanvas.allSides){    
     side.draw();
 }
   
@@ -69,20 +45,5 @@ function currentMode(){
   currentCount++;
 }
 
-function populate() {
-  openSidesClone = [...openSides]
-  x = 0;
-  for(side of openSidesClone){
-    x++;
-    let newTriangle = createTriangle(side);
-    if(newTriangle){
-      allTriangles.push(newTriangle)
-      openSides = [...newTriangle.sides, ...openSides];
-      openSides = openSides.filter(element => !element.equals(side));
-      allSides = [...newTriangle.sides, ...allSides]
-    }
-    
-  }
-}
 
 

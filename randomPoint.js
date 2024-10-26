@@ -93,60 +93,6 @@ class Side{
   }
 }
 
-// Creates and returns a triangle from: Side
-function createTriangleFromSide(openSide){
-    let a = openSide.a;
-    let b = openSide.b;
-    
-    let anglePerpendicular = openSide.angle + openSide.getRandomizer()*0.5*Math.PI
-    const angle = anglePerpendicular + getRandom(-0.4*Math.PI, 0.4*Math.PI);
-    const distance = getRandom(openSide.length*0.005, openSide.length*1.6, 0);
-
-
-    // Create new point C through random generated angle, then offsets it from the midpoint with The random generated distance. From any Point R, use angle, cos and sin to derive x and y coordinate
-
-    const pointC = {
-        x: openSide.midPoint.x + distance * Math.cos(angle),
-        y: openSide.midPoint.y + distance * Math.sin(angle)
-    };
-
-    const c = new Point(pointC.x, pointC.y);
-
-    return new Triangle(openSide.a, openSide.b, c);
-
-}
-
-
-// Creates and returns a triangle from any type of input. Will undergo a sanity check first. Todo: create from Variable, x,y 
-function createTriangle(a){
-  function overlapsAny(){
-    return !allTriangles.reduce((acc, triangle2) => 
-      { return acc && !doTrianglesOverlap(newTriangle, triangle2)}, true)
-  }
-  let attempts = 0;
-  let newTriangle;
-  let create;
-  
-  if(a instanceof Side){
-    create = createTriangleFromSide;
-  }
-
-
-  do{
-    newTriangle = create(a);
-    attempts++;
-    if(attempts >4){return false;}
-  } while(
-    !newTriangle.sanityCheck() ||
-    overlapsAny() 
-    )
-
-  return newTriangle;
-}
-
-
-
-
 class Triangle{
   constructor(arg1, arg2, arg3){
     this.pointA;
@@ -156,8 +102,6 @@ class Triangle{
     this.sideAB;
     this.sideAC;
     this.sideBC;
-
-    
 
     if(arg1 instanceof Point && arg2 instanceof Point && arg3 instanceof Point){
       this.pointA = arg1;
@@ -188,7 +132,7 @@ class Triangle{
     }
     
     this.size = calculateTriangleArea(this.pointA, this.pointB, this.pointC)
-    this.centroid = calculateCentroid(pointA, pointB, pointC)
+    this.centroid = calculateCentroid(this.pointA, this.pointB, this.pointC)
     this.points = [this.pointA, this.pointB, this.pointC]
     this.sides = [this.sideAB, this.sideAC, this.sideBC]
 
@@ -208,10 +152,6 @@ class Triangle{
 
     console.log(`size:${this.size}`);
     return true;
-  }
-
-  overLaps(){
-
   }
 }
 
