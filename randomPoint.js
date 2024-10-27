@@ -2,6 +2,11 @@ class Point{
   constructor(x, y){
     this.x = x;
     this.y = y;
+    this.occupiedAngle = 0;
+  }
+
+  addOccupiedAngle(amount){
+    this.occupiedAngle += amount;
   }
 }
 
@@ -111,6 +116,10 @@ class Triangle{
       this.sideAB = new Side(this.pointA, this.pointB)
       this.sideAC = new Side(this.pointA, this.pointC)
       this.sideBC = new Side(this.pointB, this.pointC)
+
+      this.angleA;
+      this.angleB;
+      this.angleC;
       
       this.sideAB.closeFromTrianglePoint(this.pointC);
       this.sideAC.closeFromTrianglePoint(this.pointB);
@@ -131,6 +140,8 @@ class Triangle{
       // to implement
     }
     
+    this.calculateAngles();
+
     this.size = calculateTriangleArea(this.pointA, this.pointB, this.pointC)
     this.centroid = calculateCentroid(this.pointA, this.pointB, this.pointC)
     this.points = [this.pointA, this.pointB, this.pointC]
@@ -138,20 +149,21 @@ class Triangle{
 
   }
 
-  
-    
-  valid(){
-    let minimumSize = 1/7*Math.PI
-    if(
-      calculateAngle(this.pointA, this.pointB, this.pointC) < minimumSize ||
-      calculateAngle(this.pointB, this.pointA, this.pointC) < minimumSize ||
-      calculateAngle(this.pointC, this.pointB, this.pointA) < minimumSize){return false;}
-    
-      
-    if(this.size < 50){return false;}
+  calculateAngles() {
+    // Calculate the lengths of the sides
+    const a = this.sideBC.length;
+    const b = this.sideAC.length; // Length AC
+    const c = this.sideAB.length; // Length AB
 
-    console.log(`size:${this.size}`);
-    return true;
+    this.angleA = Math.acos((b * b + c * c - a * a) / (2 * b * c)); // Angle at A
+    this.angleB = Math.acos((a * a + c * c - b * b) / (2 * a * c)); // Angle at B
+    this.angleC = Math.acos((a * a + b * b - c * c) / (2 * a * b)); // Angle at C
+
+    this.pointA.addOccupiedAngle(this.angleA);
+    this.pointB.addOccupiedAngle(this.angleB);
+    this.pointC.addOccupiedAngle(this.angleC);
+    console.log(`random angle: ${this.angleA}`);
+    
   }
 }
 

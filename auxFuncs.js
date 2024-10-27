@@ -45,6 +45,15 @@ function recursiveToString(obj) {
     if (angleA < 0) {
         angleA += 2 * Math.PI;
     }
+
+    while( angleA < 0){
+        angleA += 1*Math.PI
+    }
+
+    while(angleA > 1*Math.PI){
+        angleA -= 1*Math.PI
+    }
+
   
     return angleA; // Angle in radians
   }
@@ -83,14 +92,15 @@ function doTrianglesOverlap(triangle1, triangle2) {
         }
     }
 
-    // // Sometimes points can still be the same
-    // for(point1 of triangle1.points){
-    //     for(point2 of triangle2.points){
-    //         if(point1 === point2){
-    //             return false;
-    //         }
-    //     }
-    // }
+    for(point1 of triangle1.points){
+        for(point2 of triangle2.points){
+            if(point1 === point2 && point1.occupiedAngle <= Math.PI){
+                return false;
+            } else if (dist(point1.x, point1.y, point2.x, point2.y) > triangle1.sideAB.length*20){
+                return false;
+            }
+        }
+    }
 
 
     for(side1 of triangle1.sides){
